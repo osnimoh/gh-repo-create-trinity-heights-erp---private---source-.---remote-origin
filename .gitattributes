@@ -1,0 +1,8 @@
+# Normalise line endings: LF in the repo, regardless of contributor OS.
+* text=auto eol=lf
+
+# Binary assets — never normalise.
+*.ico binary
+*.png binary
+*.jpg binary
+*.svg text eol=lf
