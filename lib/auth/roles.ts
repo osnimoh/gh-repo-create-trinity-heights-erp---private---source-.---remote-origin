@@ -19,3 +19,19 @@ export type AppRole = (typeof APP_ROLES)[number];
 export function isAppRole(value: string): value is AppRole {
   return (APP_ROLES as readonly string[]).includes(value);
 }
+
+const ROLE_LABELS: Record<AppRole, string> = {
+  admin: "Administrator",
+  teacher: "Teacher",
+  form_teacher: "Form Teacher",
+  house_staff: "House Staff",
+  bursary: "Bursary",
+  nurse: "Nurse",
+  dsl: "Safeguarding Lead",
+  admissions: "Admissions",
+  parent: "Parent",
+};
+
+export function roleLabel(role: AppRole): string {
+  return ROLE_LABELS[role];
+}

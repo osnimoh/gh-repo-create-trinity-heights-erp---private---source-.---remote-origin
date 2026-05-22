@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Trinity Heights design system. Warm, professional, calm — a caring boarding
+   school. Mobile-first. See CLAUDE.md for the palette rationale. */
+@theme {
+  --color-maroon: #722f37; /* primary */
+  --color-maroon-dark: #5b252c;
+  --color-navy: #0d2b45; /* headings / structure */
+  --color-gold: #b8860b; /* accent */
+  --color-cream: #f4f1ed; /* alt rows / subtle surfaces */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-background: #ffffff;
+  --color-foreground: #1d1d1f;
+  --color-muted: #6b6b70;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, Cambria, "Times New Roman", serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+  color: var(--color-navy);
 }
