@@ -26,43 +26,46 @@ server code and test fixtures.
 
 ### `person`
 
-| Role                             | SELECT                                     | INSERT | UPDATE | DELETE |
-| -------------------------------- | ------------------------------------------ | ------ | ------ | ------ |
-| admin                            | ✅                                         | ✅     | ✅     | ✅     |
-| admissions                       | ✅                                         | ✅     | ✅     | —      |
-| bursary, nurse, dsl, house_staff | ✅ _(broad basic identity)_                | —      | —      | —      |
-| teacher, form_teacher            | ✅ _(own-class students only)_             | —      | —      | —      |
-| any staff                        | ✅ _(staff directory persons)_             | —      | —      | —      |
-| parent                           | ✅ _(own person + own children's persons)_ | —      | —      | —      |
-| self (any user)                  | ✅ _(own person row)_                      | —      | —      | —      |
+| Role                  | SELECT                                     | INSERT | UPDATE | DELETE |
+| --------------------- | ------------------------------------------ | ------ | ------ | ------ |
+| admin                 | ✅                                         | ✅     | ✅     | ✅     |
+| admissions            | ✅                                         | ✅     | ✅     | —      |
+| bursary, nurse, dsl   | ✅ _(broad basic identity)_                | —      | —      | —      |
+| teacher, form_teacher | ✅ _(own-class students only)_             | —      | —      | —      |
+| house_staff           | ✅ _(own-house students only)_             | —      | —      | —      |
+| any staff             | ✅ _(staff directory persons)_             | —      | —      | —      |
+| parent                | ✅ _(own person + own children's persons)_ | —      | —      | —      |
+| self (any user)       | ✅ _(own person row)_                      | —      | —      | —      |
 
-> Hardened (review #2): plain teachers/form-teachers read only the persons of
-> students they teach (`is_teacher_of_student`). `house_staff` keeps broad read
-> pending the staff↔house table (#4). `can_read_all_identity()` = admin /
-> admissions / bursary / nurse / dsl / house_staff.
+> Hardened (review #2, #4): teachers/form-teachers read only the persons of
+> students they teach (`is_teacher_of_student`); `house_staff` reads only its
+> assigned house's students (`is_house_staff_of_student`, via `staff_house`).
+> `can_read_all_identity()` = admin / admissions / bursary / nurse / dsl.
 
 ### `student`
 
-| Role                             | SELECT                         | INSERT | UPDATE | DELETE |
-| -------------------------------- | ------------------------------ | ------ | ------ | ------ |
-| admin                            | ✅                             | ✅     | ✅     | ✅     |
-| admissions                       | ✅                             | ✅     | ✅     | —      |
-| bursary, nurse, dsl, house_staff | ✅ _(broad basic identity)_    | —      | —      | —      |
-| teacher, form_teacher            | ✅ _(own-class students only)_ | —      | —      | —      |
-| parent                           | ✅ _(own children only)_       | —      | —      | —      |
+| Role                  | SELECT                         | INSERT | UPDATE | DELETE |
+| --------------------- | ------------------------------ | ------ | ------ | ------ |
+| admin                 | ✅                             | ✅     | ✅     | ✅     |
+| admissions            | ✅                             | ✅     | ✅     | —      |
+| bursary, nurse, dsl   | ✅ _(broad basic identity)_    | —      | —      | —      |
+| teacher, form_teacher | ✅ _(own-class students only)_ | —      | —      | —      |
+| house_staff           | ✅ _(own-house students only)_ | —      | —      | —      |
+| parent                | ✅ _(own children only)_       | —      | —      | —      |
 
 ### `guardian`
 
-| Role                             | SELECT                               | INSERT | UPDATE | DELETE |
-| -------------------------------- | ------------------------------------ | ------ | ------ | ------ |
-| admin                            | ✅                                   | ✅     | ✅     | ✅     |
-| admissions                       | ✅                                   | ✅     | ✅     | —      |
-| teacher, form_teacher            | ✅ _(own-class students' guardians)_ | —      | —      | —      |
-| parent                           | ✅ _(own guardian record)_           | —      | —      | —      |
-| bursary, nurse, dsl, house_staff | —                                    | —      | —      | —      |
+| Role                  | SELECT                               | INSERT | UPDATE | DELETE |
+| --------------------- | ------------------------------------ | ------ | ------ | ------ |
+| admin                 | ✅                                   | ✅     | ✅     | ✅     |
+| admissions            | ✅                                   | ✅     | ✅     | —      |
+| teacher, form_teacher | ✅ _(own-class students' guardians)_ | —      | —      | —      |
+| house_staff           | ✅ _(own-house students' guardians)_ | —      | —      | —      |
+| parent                | ✅ _(own guardian record)_           | —      | —      | —      |
+| bursary, nurse, dsl   | —                                    | —      | —      | —      |
 
-> Hardened (review #3): form/house staff no longer read EVERY family's guardian;
-> scoped to guardians of students they teach.
+> Hardened (review #3, #4): form/house staff no longer read EVERY family's
+> guardian; scoped to guardians of students they teach / house they manage.
 
 ### `student_guardian`
 

@@ -41,9 +41,10 @@ brief, code being green in CI is necessary but **not sufficient** — the items 
   automated browser interaction tests.
 - **Rate limiter is in-memory** — replace with a shared store (e.g. Upstash
   Redis) before production; wire it to login and sensitive actions.
-- **`house_staff` is not house-scoped** for boarding roll/exeat (no staff↔house
-  table yet); **broad staff read** of student identity is not yet class-scoped
-  for non-form teachers. Tighten as those relationships are populated.
+- (Resolved) Teacher identity reads are class-scoped (#2) and `house_staff` is
+  house-scoped for boarding/exeat/identity via the `staff_house` table (#4).
+  Note: a staff member with NO `staff_house` assignment sees nothing for their
+  house — assignment is an operational step when onboarding house staff.
 - **Protected-table READS** are not yet audited (Postgres has no SELECT
   trigger) — add dedicated audited RPCs for safeguarding/health reads if read
   auditing is required by policy.

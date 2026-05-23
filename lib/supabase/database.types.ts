@@ -1381,6 +1381,43 @@ export type Database = {
           },
         ];
       };
+      staff_house: {
+        Row: {
+          id: string;
+          staff_id: string;
+          house_id: string;
+          created_at: string;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          staff_id: string;
+          house_id: string;
+          created_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          staff_id?: string;
+          house_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "staff_house_staff_id_fkey";
+            columns: ["staff_id"];
+            referencedRelation: "staff";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "staff_house_house_id_fkey";
+            columns: ["house_id"];
+            referencedRelation: "house";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -1443,6 +1480,18 @@ export type Database = {
         Returns: boolean;
       };
       is_teacher_of_guardian: {
+        Args: { p_guardian_id: string };
+        Returns: boolean;
+      };
+      is_house_staff_of: {
+        Args: { p_house_id: string };
+        Returns: boolean;
+      };
+      is_house_staff_of_student: {
+        Args: { p_student_id: string };
+        Returns: boolean;
+      };
+      is_house_staff_of_guardian: {
         Args: { p_guardian_id: string };
         Returns: boolean;
       };
