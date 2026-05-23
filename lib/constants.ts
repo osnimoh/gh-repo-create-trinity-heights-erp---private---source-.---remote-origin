@@ -5,6 +5,11 @@ type Track = Database["public"]["Enums"]["track"];
 type YearGroup = Database["public"]["Enums"]["year_group"];
 type Sex = Database["public"]["Enums"]["sex"];
 type ApplicationStatus = Database["public"]["Enums"]["application_status"];
+type AttendanceStatus = Database["public"]["Enums"]["attendance_status"];
+type AttendanceSessionType =
+  Database["public"]["Enums"]["attendance_session_type"];
+type BoardingSession = Database["public"]["Enums"]["boarding_session"];
+type ExeatStatus = Database["public"]["Enums"]["exeat_status"];
 
 export const STREAMS: { value: Stream; label: string }[] = [
   { value: "science", label: "Science" },
@@ -63,3 +68,44 @@ function lookup<T extends string>(
 export const streamLabel = (v: Stream | null) => lookup(STREAMS, v);
 export const trackLabel = (v: Track | null) => lookup(TRACKS, v);
 export const yearGroupLabel = (v: YearGroup | null) => lookup(YEAR_GROUPS, v);
+
+export const ATTENDANCE_STATUSES: { value: AttendanceStatus; label: string }[] =
+  [
+    { value: "present", label: "Present" },
+    { value: "absent", label: "Absent" },
+    { value: "late", label: "Late" },
+    { value: "excused", label: "Excused" },
+  ];
+
+export const ATTENDANCE_SESSION_TYPES: {
+  value: AttendanceSessionType;
+  label: string;
+}[] = [
+  { value: "morning", label: "Morning" },
+  { value: "afternoon", label: "Afternoon" },
+  { value: "prep", label: "Prep" },
+];
+
+export const BOARDING_SESSIONS: { value: BoardingSession; label: string }[] = [
+  { value: "morning", label: "Morning" },
+  { value: "evening", label: "Evening" },
+];
+
+export const EXEAT_STATUS_LABELS: Record<ExeatStatus, string> = {
+  requested: "Requested",
+  approved: "Approved",
+  denied: "Denied",
+  departed: "Departed",
+  returned: "Returned",
+  cancelled: "Cancelled",
+};
+
+// Allowed exeat transitions.
+export const EXEAT_TRANSITIONS: Record<ExeatStatus, ExeatStatus[]> = {
+  requested: ["approved", "denied", "cancelled"],
+  approved: ["departed", "cancelled"],
+  denied: [],
+  departed: ["returned"],
+  returned: [],
+  cancelled: [],
+};

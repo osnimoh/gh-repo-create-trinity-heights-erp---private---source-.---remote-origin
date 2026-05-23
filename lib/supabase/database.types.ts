@@ -585,6 +585,197 @@ export type Database = {
           },
         ];
       };
+      attendance_session: {
+        Row: Timestamps & {
+          id: string;
+          class_id: string;
+          session_date: string;
+          session_type: Database["public"]["Enums"]["attendance_session_type"];
+          taken_by_staff_id: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          class_id: string;
+          session_date?: string;
+          session_type?: Database["public"]["Enums"]["attendance_session_type"];
+          taken_by_staff_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          class_id?: string;
+          session_date?: string;
+          session_type?: Database["public"]["Enums"]["attendance_session_type"];
+          taken_by_staff_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "attendance_session_class_id_fkey";
+            columns: ["class_id"];
+            referencedRelation: "class";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      attendance_mark: {
+        Row: Timestamps & {
+          id: string;
+          attendance_session_id: string;
+          student_id: string;
+          status: Database["public"]["Enums"]["attendance_status"];
+          note: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          attendance_session_id: string;
+          student_id: string;
+          status?: Database["public"]["Enums"]["attendance_status"];
+          note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          attendance_session_id?: string;
+          student_id?: string;
+          status?: Database["public"]["Enums"]["attendance_status"];
+          note?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "attendance_mark_attendance_session_id_fkey";
+            columns: ["attendance_session_id"];
+            referencedRelation: "attendance_session";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "attendance_mark_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      boarding_roll: {
+        Row: Timestamps & {
+          id: string;
+          student_id: string;
+          house_id: string | null;
+          roll_date: string;
+          session: Database["public"]["Enums"]["boarding_session"];
+          present: boolean;
+          note: string | null;
+          taken_by_staff_id: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          house_id?: string | null;
+          roll_date?: string;
+          session?: Database["public"]["Enums"]["boarding_session"];
+          present?: boolean;
+          note?: string | null;
+          taken_by_staff_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          house_id?: string | null;
+          roll_date?: string;
+          session?: Database["public"]["Enums"]["boarding_session"];
+          present?: boolean;
+          note?: string | null;
+          taken_by_staff_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "boarding_roll_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "boarding_roll_house_id_fkey";
+            columns: ["house_id"];
+            referencedRelation: "house";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      exeat: {
+        Row: Timestamps & {
+          id: string;
+          student_id: string;
+          collector_guardian_id: string | null;
+          reason: string | null;
+          departure_at: string | null;
+          expected_return_at: string | null;
+          actual_return_at: string | null;
+          status: Database["public"]["Enums"]["exeat_status"];
+          approved_by_staff_id: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          collector_guardian_id?: string | null;
+          reason?: string | null;
+          departure_at?: string | null;
+          expected_return_at?: string | null;
+          actual_return_at?: string | null;
+          status?: Database["public"]["Enums"]["exeat_status"];
+          approved_by_staff_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          collector_guardian_id?: string | null;
+          reason?: string | null;
+          departure_at?: string | null;
+          expected_return_at?: string | null;
+          actual_return_at?: string | null;
+          status?: Database["public"]["Enums"]["exeat_status"];
+          approved_by_staff_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "exeat_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "exeat_collector_guardian_id_fkey";
+            columns: ["collector_guardian_id"];
+            referencedRelation: "guardian";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -655,6 +846,23 @@ export type Database = {
         };
         Returns: { student_id: string; admission_no: string }[];
       };
+      current_staff_id: {
+        Args: Record<string, never>;
+        Returns: string;
+      };
+      is_teacher_of_class: {
+        Args: { p_class_id: string };
+        Returns: boolean;
+      };
+      save_attendance: {
+        Args: {
+          p_class_id: string;
+          p_session_date: string;
+          p_session_type: Database["public"]["Enums"]["attendance_session_type"];
+          p_marks: Json;
+        };
+        Returns: string;
+      };
     };
     Enums: {
       sex: "male" | "female";
@@ -694,6 +902,16 @@ export type Database = {
         | "rejected"
         | "withdrawn";
       enrolment_status: "active" | "withdrawn" | "graduated" | "transferred";
+      attendance_status: "present" | "absent" | "late" | "excused";
+      attendance_session_type: "morning" | "afternoon" | "prep";
+      boarding_session: "morning" | "evening";
+      exeat_status:
+        | "requested"
+        | "approved"
+        | "denied"
+        | "departed"
+        | "returned"
+        | "cancelled";
     };
     CompositeTypes: Record<string, never>;
   };
