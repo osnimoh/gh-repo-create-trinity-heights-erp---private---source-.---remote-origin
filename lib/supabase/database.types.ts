@@ -459,6 +459,12 @@ export type Database = {
             referencedRelation: "subject";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "class_subject_teacher_staff_id_fkey";
+            columns: ["teacher_staff_id"];
+            referencedRelation: "staff";
+            referencedColumns: ["id"];
+          },
         ];
       };
       application: {

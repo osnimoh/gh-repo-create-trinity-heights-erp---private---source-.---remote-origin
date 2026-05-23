@@ -22,6 +22,12 @@ export async function requireUser(): Promise<User> {
   return user;
 }
 
+/** Redirects away unless the caller is an admin. Gate admin-only pages/actions. */
+export async function requireAdmin(): Promise<void> {
+  const roles = await getCurrentRoles();
+  if (!roles.includes("admin")) redirect("/");
+}
+
 export async function getCurrentRoles(): Promise<AppRole[]> {
   const supabase = await createClient();
   const {
