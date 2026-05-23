@@ -125,6 +125,20 @@ export const INVOICE_STATUS_LABELS: Record<InvoiceStatus, string> = {
   void: "Void",
 };
 
+export const DAYS_OF_WEEK: { value: number; label: string }[] = [
+  { value: 1, label: "Monday" },
+  { value: 2, label: "Tuesday" },
+  { value: 3, label: "Wednesday" },
+  { value: 4, label: "Thursday" },
+  { value: 5, label: "Friday" },
+  { value: 6, label: "Saturday" },
+  { value: 7, label: "Sunday" },
+];
+
+export function dayLabel(value: number): string {
+  return DAYS_OF_WEEK.find((d) => d.value === value)?.label ?? String(value);
+}
+
 // Format an amount as Ghana Cedis. Always two decimals, GH₵ symbol.
 export function formatCedis(amount: number | null | undefined): string {
   const n = typeof amount === "number" ? amount : 0;

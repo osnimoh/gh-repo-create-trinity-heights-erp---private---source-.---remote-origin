@@ -954,6 +954,197 @@ export type Database = {
           },
         ];
       };
+      assessment: {
+        Row: Timestamps & {
+          id: string;
+          class_subject_id: string;
+          term_id: string;
+          name: string;
+          max_score: number;
+          weight: number;
+          assessment_date: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          class_subject_id: string;
+          term_id: string;
+          name: string;
+          max_score?: number;
+          weight?: number;
+          assessment_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          class_subject_id?: string;
+          term_id?: string;
+          name?: string;
+          max_score?: number;
+          weight?: number;
+          assessment_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_class_subject_id_fkey";
+            columns: ["class_subject_id"];
+            referencedRelation: "class_subject";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "assessment_term_id_fkey";
+            columns: ["term_id"];
+            referencedRelation: "term";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      result: {
+        Row: Timestamps & {
+          id: string;
+          assessment_id: string;
+          student_id: string;
+          score: number;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          assessment_id: string;
+          student_id: string;
+          score: number;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          assessment_id?: string;
+          student_id?: string;
+          score?: number;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "result_assessment_id_fkey";
+            columns: ["assessment_id"];
+            referencedRelation: "assessment";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "result_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      report_card: {
+        Row: Timestamps & {
+          id: string;
+          student_id: string;
+          term_id: string;
+          class_id: string | null;
+          overall_average: number | null;
+          overall_grade: string | null;
+          subjects: Json;
+          remarks: string | null;
+          generated_at: string;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          term_id: string;
+          class_id?: string | null;
+          overall_average?: number | null;
+          overall_grade?: string | null;
+          subjects?: Json;
+          remarks?: string | null;
+          generated_at?: string;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          term_id?: string;
+          class_id?: string | null;
+          overall_average?: number | null;
+          overall_grade?: string | null;
+          subjects?: Json;
+          remarks?: string | null;
+          generated_at?: string;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "report_card_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "report_card_term_id_fkey";
+            columns: ["term_id"];
+            referencedRelation: "term";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      timetable: {
+        Row: Timestamps & {
+          id: string;
+          class_id: string;
+          day_of_week: number;
+          period_no: number;
+          subject_id: string | null;
+          room: string | null;
+        };
+        Insert: {
+          id?: string;
+          class_id: string;
+          day_of_week: number;
+          period_no: number;
+          subject_id?: string | null;
+          room?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          class_id?: string;
+          day_of_week?: number;
+          period_no?: number;
+          subject_id?: string | null;
+          room?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "timetable_class_id_fkey";
+            columns: ["class_id"];
+            referencedRelation: "class";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "timetable_subject_id_fkey";
+            columns: ["subject_id"];
+            referencedRelation: "subject";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -1053,6 +1244,18 @@ export type Database = {
           p_reference?: string;
           p_paid_on?: string;
         };
+        Returns: string;
+      };
+      wassce_grade: {
+        Args: { p_percent: number };
+        Returns: string;
+      };
+      save_results: {
+        Args: { p_assessment_id: string; p_marks: Json };
+        Returns: undefined;
+      };
+      generate_report_card: {
+        Args: { p_student_id: string; p_term_id: string };
         Returns: string;
       };
     };
