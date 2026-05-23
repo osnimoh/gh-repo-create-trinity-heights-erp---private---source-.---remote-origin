@@ -461,6 +461,36 @@ export type Database = {
           },
         ];
       };
+      audit_log: {
+        Row: {
+          id: string;
+          occurred_at: string;
+          actor_user_id: string | null;
+          action: string;
+          table_name: string;
+          row_id: string | null;
+          detail: Json | null;
+        };
+        Insert: {
+          id?: string;
+          occurred_at?: string;
+          actor_user_id?: string | null;
+          action: string;
+          table_name: string;
+          row_id?: string | null;
+          detail?: Json | null;
+        };
+        Update: {
+          id?: string;
+          occurred_at?: string;
+          actor_user_id?: string | null;
+          action?: string;
+          table_name?: string;
+          row_id?: string | null;
+          detail?: Json | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -471,6 +501,22 @@ export type Database = {
       current_roles: {
         Args: Record<string, never>;
         Returns: Database["public"]["Enums"]["app_role"][];
+      };
+      current_person_id: {
+        Args: Record<string, never>;
+        Returns: string;
+      };
+      is_admin: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+      is_staff: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+      is_parent_of_student: {
+        Args: { p_student_id: string };
+        Returns: boolean;
       };
     };
     Enums: {

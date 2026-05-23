@@ -32,10 +32,15 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-anon-key
 
   database:
-    name: Migrations apply cleanly
+    name: Migrations + RLS access tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
       - uses: supabase/setup-cli@v1
         with:
           version: latest
@@ -43,6 +48,15 @@ jobs:
         run: supabase start
       - name: Apply all migrations + seed from scratch
         run: supabase db reset
+      - name: Run RLS access-boundary tests against the live DB
+        run: |
+          set -a
+          eval "$(supabase status -o env \
+            --override-name api.url=SUPABASE_URL \
+            --override-name auth.anon_key=SUPABASE_ANON_KEY \
+            --override-name auth.service_role_key=SUPABASE_SERVICE_ROLE_KEY)"
+          set +a
+          npm run test:rls
       - name: Stop
         if: always()
         run: supabase stop

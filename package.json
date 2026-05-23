@@ -12,6 +12,7 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:rls": "vitest run tests/rls",
     "test:e2e": "playwright test",
     "db:reset": "supabase db reset",
     "db:start": "supabase start",
