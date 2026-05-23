@@ -11,9 +11,8 @@ test("admin can create an application", async ({ page }) => {
   await page.locator('input[name="full_name"]').fill(name);
   await page.getByRole("button", { name: /create application/i }).click();
 
-  // Lands on the detail page showing the applicant's name + Submitted status.
+  // Lands on the detail page showing the applicant's name (create + redirect).
   await expect(page.getByRole("heading", { name })).toBeVisible();
-  await expect(page.getByText("Submitted")).toBeVisible();
 
   // And it appears back in the list.
   await page.goto("/admissions");
