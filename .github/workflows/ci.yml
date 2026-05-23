@@ -47,7 +47,7 @@ jobs:
       - name: Start local Supabase (throwaway DB)
         run: supabase start
       - name: Apply all migrations + seed from scratch
-        run: supabase db reset
+        run: supabase db reset --debug
       - name: Run RLS access-boundary tests against the live DB
         run: |
           set -a
