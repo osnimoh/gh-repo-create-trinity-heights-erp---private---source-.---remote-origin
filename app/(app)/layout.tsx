@@ -2,6 +2,7 @@ import { requireUser, getCurrentRoles } from "@/lib/auth/session";
 import { visibleNav } from "@/lib/nav";
 import { Sidebar } from "@/components/shell/sidebar";
 import { Topbar } from "@/components/shell/topbar";
+import { SyncProvider } from "@/components/offline/sync-provider";
 
 export default async function AppLayout({
   children,
@@ -16,6 +17,7 @@ export default async function AppLayout({
         <Topbar email={user.email ?? ""} roles={roles} />
         <main className="bg-cream/40 flex-1 p-6">{children}</main>
       </div>
+      <SyncProvider />
     </div>
   );
 }

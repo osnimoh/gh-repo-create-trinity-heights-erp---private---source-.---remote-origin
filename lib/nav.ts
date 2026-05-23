@@ -56,6 +56,7 @@ export const NAV: NavItem[] = [
       "dsl",
     ],
   },
+  { label: "Exports", href: "/exports", roles: ["admin"] },
   { label: "Settings", href: "/settings", roles: ["admin"] },
 ];
 
