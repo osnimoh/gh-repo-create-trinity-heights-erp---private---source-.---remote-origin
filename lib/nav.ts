@@ -10,6 +10,7 @@ export type NavItem = {
 
 export const NAV: NavItem[] = [
   { label: "Dashboard", href: "/", roles: "all" },
+  { label: "Parent Portal", href: "/portal", roles: ["parent"] },
   { label: "Admissions", href: "/admissions", roles: ["admin", "admissions"] },
   {
     label: "Students",

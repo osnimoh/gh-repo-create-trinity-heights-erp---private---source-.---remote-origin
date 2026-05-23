@@ -1145,6 +1145,242 @@ export type Database = {
           },
         ];
       };
+      health_record: {
+        Row: Timestamps & {
+          id: string;
+          student_id: string;
+          blood_group: string | null;
+          allergies: string | null;
+          conditions: string | null;
+          medications: string | null;
+          notes: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          blood_group?: string | null;
+          allergies?: string | null;
+          conditions?: string | null;
+          medications?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          blood_group?: string | null;
+          allergies?: string | null;
+          conditions?: string | null;
+          medications?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "health_record_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      sick_bay_visit: {
+        Row: Timestamps & {
+          id: string;
+          student_id: string;
+          visited_at: string;
+          complaint: string | null;
+          treatment: string | null;
+          outcome: string | null;
+          seen_by_staff_id: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          visited_at?: string;
+          complaint?: string | null;
+          treatment?: string | null;
+          outcome?: string | null;
+          seen_by_staff_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          visited_at?: string;
+          complaint?: string | null;
+          treatment?: string | null;
+          outcome?: string | null;
+          seen_by_staff_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "sick_bay_visit_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      safeguarding_flag: {
+        Row: Timestamps & {
+          id: string;
+          student_id: string;
+          category: string;
+          severity: Database["public"]["Enums"]["safeguarding_severity"];
+          details: string | null;
+          status: Database["public"]["Enums"]["safeguarding_status"];
+          raised_by: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          category: string;
+          severity?: Database["public"]["Enums"]["safeguarding_severity"];
+          details?: string | null;
+          status?: Database["public"]["Enums"]["safeguarding_status"];
+          raised_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          category?: string;
+          severity?: Database["public"]["Enums"]["safeguarding_severity"];
+          details?: string | null;
+          status?: Database["public"]["Enums"]["safeguarding_status"];
+          raised_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "safeguarding_flag_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      message: {
+        Row: {
+          id: string;
+          subject: string;
+          body: string;
+          audience: Database["public"]["Enums"]["message_audience"];
+          class_id: string | null;
+          target_user_id: string | null;
+          send_email: boolean;
+          send_sms: boolean;
+          sender_user_id: string | null;
+          created_at: string;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          subject: string;
+          body: string;
+          audience: Database["public"]["Enums"]["message_audience"];
+          class_id?: string | null;
+          target_user_id?: string | null;
+          send_email?: boolean;
+          send_sms?: boolean;
+          sender_user_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          subject?: string;
+          body?: string;
+          audience?: Database["public"]["Enums"]["message_audience"];
+          class_id?: string | null;
+          target_user_id?: string | null;
+          send_email?: boolean;
+          send_sms?: boolean;
+          sender_user_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [];
+      };
+      notification: {
+        Row: {
+          id: string;
+          message_id: string | null;
+          user_id: string;
+          channel: Database["public"]["Enums"]["notification_channel"];
+          status: Database["public"]["Enums"]["notification_status"];
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          message_id?: string | null;
+          user_id: string;
+          channel?: Database["public"]["Enums"]["notification_channel"];
+          status?: Database["public"]["Enums"]["notification_status"];
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          message_id?: string | null;
+          user_id?: string;
+          channel?: Database["public"]["Enums"]["notification_channel"];
+          status?: Database["public"]["Enums"]["notification_status"];
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notification_message_id_fkey";
+            columns: ["message_id"];
+            referencedRelation: "message";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      acknowledgement: {
+        Row: {
+          id: string;
+          message_id: string;
+          user_id: string;
+          acknowledged_at: string;
+        };
+        Insert: {
+          id?: string;
+          message_id: string;
+          user_id: string;
+          acknowledged_at?: string;
+        };
+        Update: {
+          id?: string;
+          message_id?: string;
+          user_id?: string;
+          acknowledged_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "acknowledgement_message_id_fkey";
+            columns: ["message_id"];
+            referencedRelation: "message";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -1258,6 +1494,14 @@ export type Database = {
         Args: { p_student_id: string; p_term_id: string };
         Returns: string;
       };
+      catering_allergies: {
+        Args: Record<string, never>;
+        Returns: {
+          student_id: string;
+          full_name: string;
+          allergies: string | null;
+        }[];
+      };
     };
     Enums: {
       sex: "male" | "female";
@@ -1310,6 +1554,11 @@ export type Database = {
       scholarship_kind: "percentage" | "fixed";
       payment_method: "momo" | "bank" | "cash";
       invoice_status: "unpaid" | "part_paid" | "paid" | "void";
+      safeguarding_severity: "low" | "medium" | "high";
+      safeguarding_status: "open" | "monitoring" | "closed";
+      message_audience: "all_parents" | "all_staff" | "class" | "individual";
+      notification_channel: "in_app" | "email" | "sms";
+      notification_status: "queued" | "sent" | "failed";
     };
     CompositeTypes: Record<string, never>;
   };
