@@ -28,6 +28,24 @@ as $$
   );
 $$;
 
+-- True when the current user teaches a student that this guardian is linked to.
+-- SECURITY DEFINER so it reads student_guardian as owner (bypassing RLS) — this
+-- AVOIDS a mutual-recursion cycle: guardian's policy must not directly subquery
+-- student_guardian, whose own policy subqueries guardian.
+create or replace function public.is_teacher_of_guardian(p_guardian_id uuid)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.student_guardian sg
+    where sg.guardian_id = p_guardian_id
+      and public.is_teacher_of_student(sg.student_id)
+  );
+$$;
+
 -- Roles that legitimately need school-wide BASIC IDENTITY lookup to operate:
 -- admin (broad), admissions (enrolment), bursary (billing), nurse (health),
 -- dsl (pastoral context). house_staff is included pending #4 (house scoping).
@@ -88,11 +106,7 @@ create policy guardian_select_scoped on public.guardian
   using (
     public.is_admin()
     or public.has_role('admissions')
-    or exists (
-      select 1 from public.student_guardian sg
-      where sg.guardian_id = public.guardian.id
-        and public.is_teacher_of_student(sg.student_id)
-    )
+    or public.is_teacher_of_guardian(id)
   );
 
 drop policy student_guardian_select_staff on public.student_guardian;

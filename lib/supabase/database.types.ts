@@ -1442,6 +1442,10 @@ export type Database = {
         Args: { p_student_id: string };
         Returns: boolean;
       };
+      is_teacher_of_guardian: {
+        Args: { p_guardian_id: string };
+        Returns: boolean;
+      };
       can_read_all_identity: {
         Args: Record<string, never>;
         Returns: boolean;
