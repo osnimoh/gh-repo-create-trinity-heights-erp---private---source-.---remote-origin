@@ -461,6 +461,130 @@ export type Database = {
           },
         ];
       };
+      application: {
+        Row: Timestamps & {
+          id: string;
+          person_id: string;
+          academic_year_id: string | null;
+          stream: Database["public"]["Enums"]["stream"] | null;
+          track: Database["public"]["Enums"]["track"] | null;
+          exam_score: number | null;
+          status: Database["public"]["Enums"]["application_status"];
+          submitted_on: string;
+          decided_on: string | null;
+          notes: string | null;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          person_id: string;
+          academic_year_id?: string | null;
+          stream?: Database["public"]["Enums"]["stream"] | null;
+          track?: Database["public"]["Enums"]["track"] | null;
+          exam_score?: number | null;
+          status?: Database["public"]["Enums"]["application_status"];
+          submitted_on?: string;
+          decided_on?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          person_id?: string;
+          academic_year_id?: string | null;
+          stream?: Database["public"]["Enums"]["stream"] | null;
+          track?: Database["public"]["Enums"]["track"] | null;
+          exam_score?: number | null;
+          status?: Database["public"]["Enums"]["application_status"];
+          submitted_on?: string;
+          decided_on?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "application_person_id_fkey";
+            columns: ["person_id"];
+            referencedRelation: "person";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      enrolment: {
+        Row: Timestamps & {
+          id: string;
+          application_id: string | null;
+          student_id: string;
+          academic_year_id: string;
+          class_id: string | null;
+          house_id: string | null;
+          enrolled_on: string;
+          status: Database["public"]["Enums"]["enrolment_status"];
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          application_id?: string | null;
+          student_id: string;
+          academic_year_id: string;
+          class_id?: string | null;
+          house_id?: string | null;
+          enrolled_on?: string;
+          status?: Database["public"]["Enums"]["enrolment_status"];
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          application_id?: string | null;
+          student_id?: string;
+          academic_year_id?: string;
+          class_id?: string | null;
+          house_id?: string | null;
+          enrolled_on?: string;
+          status?: Database["public"]["Enums"]["enrolment_status"];
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "enrolment_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "enrolment_application_id_fkey";
+            columns: ["application_id"];
+            referencedRelation: "application";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "enrolment_academic_year_id_fkey";
+            columns: ["academic_year_id"];
+            referencedRelation: "academic_year";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "enrolment_class_id_fkey";
+            columns: ["class_id"];
+            referencedRelation: "class";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "enrolment_house_id_fkey";
+            columns: ["house_id"];
+            referencedRelation: "house";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -518,6 +642,19 @@ export type Database = {
         Args: { p_student_id: string };
         Returns: boolean;
       };
+      next_admission_no: {
+        Args: { p_year: number };
+        Returns: string;
+      };
+      enrol_applicant: {
+        Args: {
+          p_application_id: string;
+          p_academic_year_id: string;
+          p_class_id?: string;
+          p_house_id?: string;
+        };
+        Returns: { student_id: string; admission_no: string }[];
+      };
     };
     Enums: {
       sex: "male" | "female";
@@ -548,6 +685,15 @@ export type Database = {
         | "dsl"
         | "admissions"
         | "parent";
+      application_status:
+        | "submitted"
+        | "exam_taken"
+        | "offered"
+        | "accepted"
+        | "enrolled"
+        | "rejected"
+        | "withdrawn";
+      enrolment_status: "active" | "withdrawn" | "graduated" | "transferred";
     };
     CompositeTypes: Record<string, never>;
   };
