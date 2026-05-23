@@ -211,11 +211,11 @@ begin
 
   update public.invoice
      set amount_paid = v_paid,
-         status = case
+         status = (case
            when v_paid >= v_net then 'paid'
            when v_paid > 0 then 'part_paid'
            else 'unpaid'
-         end
+         end)::public.invoice_status
    where id = p_invoice_id;
 
   return v_payment_id;
