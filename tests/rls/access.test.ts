@@ -159,12 +159,14 @@ d("parent isolation — the core child-safety boundary", () => {
 });
 
 d("staff and admin reach", () => {
-  it("a teacher (staff) can read students across families", async () => {
+  it("a teacher with NO class assignment reads no students (own-class scoping)", async () => {
+    // Hardening #2: plain teachers are scoped to their own classes. This
+    // teacher teaches nothing, so sees neither family's child.
     const client = await signInAs(teacher);
     const { data } = await client.from("student").select("id");
     const ids = (data ?? []).map((r) => r.id);
-    expect(ids).toContain(famA.studentId);
-    expect(ids).toContain(famB.studentId);
+    expect(ids).not.toContain(famA.studentId);
+    expect(ids).not.toContain(famB.studentId);
   });
 
   it("a teacher cannot create a student (admissions/admin only)", async () => {

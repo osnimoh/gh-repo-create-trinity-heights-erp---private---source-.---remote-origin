@@ -26,45 +26,53 @@ server code and test fixtures.
 
 ### `person`
 
-| Role                                                                  | SELECT                                     | INSERT | UPDATE | DELETE |
-| --------------------------------------------------------------------- | ------------------------------------------ | ------ | ------ | ------ |
-| admin                                                                 | ✅                                         | ✅     | ✅     | ✅     |
-| admissions                                                            | ✅ (via staff)                             | ✅     | ✅     | —      |
-| other staff (teacher, form_teacher, house_staff, bursary, nurse, dsl) | ✅                                         | —      | —      | —      |
-| parent                                                                | ✅ _(own person + own children's persons)_ | —      | —      | —      |
-| self (any user)                                                       | ✅ _(own person row)_                      | —      | —      | —      |
+| Role                             | SELECT                                     | INSERT | UPDATE | DELETE |
+| -------------------------------- | ------------------------------------------ | ------ | ------ | ------ |
+| admin                            | ✅                                         | ✅     | ✅     | ✅     |
+| admissions                       | ✅                                         | ✅     | ✅     | —      |
+| bursary, nurse, dsl, house_staff | ✅ _(broad basic identity)_                | —      | —      | —      |
+| teacher, form_teacher            | ✅ _(own-class students only)_             | —      | —      | —      |
+| any staff                        | ✅ _(staff directory persons)_             | —      | —      | —      |
+| parent                           | ✅ _(own person + own children's persons)_ | —      | —      | —      |
+| self (any user)                  | ✅ _(own person row)_                      | —      | —      | —      |
 
-> Teacher access is currently "all basic identity," not yet class-scoped — the
-> student↔class relationship doesn't exist until WS3. Tighten then.
+> Hardened (review #2): plain teachers/form-teachers read only the persons of
+> students they teach (`is_teacher_of_student`). `house_staff` keeps broad read
+> pending the staff↔house table (#4). `can_read_all_identity()` = admin /
+> admissions / bursary / nurse / dsl / house_staff.
 
 ### `student`
 
-| Role        | SELECT                   | INSERT | UPDATE | DELETE |
-| ----------- | ------------------------ | ------ | ------ | ------ |
-| admin       | ✅                       | ✅     | ✅     | ✅     |
-| admissions  | ✅                       | ✅     | ✅     | —      |
-| other staff | ✅                       | —      | —      | —      |
-| parent      | ✅ _(own children only)_ | —      | —      | —      |
+| Role                             | SELECT                         | INSERT | UPDATE | DELETE |
+| -------------------------------- | ------------------------------ | ------ | ------ | ------ |
+| admin                            | ✅                             | ✅     | ✅     | ✅     |
+| admissions                       | ✅                             | ✅     | ✅     | —      |
+| bursary, nurse, dsl, house_staff | ✅ _(broad basic identity)_    | —      | —      | —      |
+| teacher, form_teacher            | ✅ _(own-class students only)_ | —      | —      | —      |
+| parent                           | ✅ _(own children only)_       | —      | —      | —      |
 
 ### `guardian`
 
-| Role                         | SELECT                     | INSERT | UPDATE | DELETE |
-| ---------------------------- | -------------------------- | ------ | ------ | ------ |
-| admin                        | ✅                         | ✅     | ✅     | ✅     |
-| admissions                   | ✅                         | ✅     | ✅     | —      |
-| form_teacher, house_staff    | ✅                         | —      | —      | —      |
-| parent                       | ✅ _(own guardian record)_ | —      | —      | —      |
-| teacher, bursary, nurse, dsl | —                          | —      | —      | —      |
+| Role                             | SELECT                               | INSERT | UPDATE | DELETE |
+| -------------------------------- | ------------------------------------ | ------ | ------ | ------ |
+| admin                            | ✅                                   | ✅     | ✅     | ✅     |
+| admissions                       | ✅                                   | ✅     | ✅     | —      |
+| teacher, form_teacher            | ✅ _(own-class students' guardians)_ | —      | —      | —      |
+| parent                           | ✅ _(own guardian record)_           | —      | —      | —      |
+| bursary, nurse, dsl, house_staff | —                                    | —      | —      | —      |
+
+> Hardened (review #3): form/house staff no longer read EVERY family's guardian;
+> scoped to guardians of students they teach.
 
 ### `student_guardian`
 
-| Role                      | SELECT                       | INSERT | UPDATE | DELETE |
-| ------------------------- | ---------------------------- | ------ | ------ | ------ |
-| admin                     | ✅                           | ✅     | ✅     | ✅     |
-| admissions                | ✅                           | ✅     | ✅     | —      |
-| form_teacher, house_staff | ✅                           | —      | —      | —      |
-| parent                    | ✅ _(links to own children)_ | —      | —      | —      |
-| others                    | —                            | —      | —      | —      |
+| Role                  | SELECT                           | INSERT | UPDATE | DELETE |
+| --------------------- | -------------------------------- | ------ | ------ | ------ |
+| admin                 | ✅                               | ✅     | ✅     | ✅     |
+| admissions            | ✅                               | ✅     | ✅     | —      |
+| teacher, form_teacher | ✅ _(own-class students' links)_ | —      | —      | —      |
+| parent                | ✅ _(links to own children)_     | —      | —      | —      |
+| others                | —                                | —      | —      | —      |
 
 ### `staff`
 
@@ -100,15 +108,19 @@ server code and test fixtures.
 
 ### `audit_log` (append-only)
 
-| Role          | SELECT | INSERT | UPDATE | DELETE |
-| ------------- | ------ | ------ | ------ | ------ |
-| admin         | ✅     | —      | —      | —      |
-| everyone else | —      | —      | —      | —      |
+| Role          | SELECT                                | INSERT | UPDATE | DELETE |
+| ------------- | ------------------------------------- | ------ | ------ | ------ |
+| admin         | ✅ _(everything EXCEPT safeguarding)_ | —      | —      | —      |
+| dsl           | ✅ _(safeguarding_flag rows ONLY)_    | —      | —      | —      |
+| everyone else | —                                     | —      | —      | —      |
 
 > Inserts happen ONLY via the `audit_row()` SECURITY DEFINER trigger. No role
-> (not even admin) may UPDATE or DELETE — privileges are revoked. The trigger is
-> attached to `payment`, `result`, `health_record`, `safeguarding_flag` when
-> those tables are created (WS5/6/7).
+> (not even admin) may UPDATE or DELETE — privileges are revoked. Audited:
+> `payment`, `result`, `health_record`, `safeguarding_flag`.
+>
+> Hardened (review #1): safeguarding audit metadata (existence/actor/volume) is
+> visible to the DSL only — admin cannot see safeguarding audit rows, keeping
+> "safeguarding is DSL-only" intact even at the metadata level.
 
 ## Not yet covered (tracked for later workstreams)
 
