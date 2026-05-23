@@ -10,6 +10,8 @@ type AttendanceSessionType =
   Database["public"]["Enums"]["attendance_session_type"];
 type BoardingSession = Database["public"]["Enums"]["boarding_session"];
 type ExeatStatus = Database["public"]["Enums"]["exeat_status"];
+type PaymentMethod = Database["public"]["Enums"]["payment_method"];
+type InvoiceStatus = Database["public"]["Enums"]["invoice_status"];
 
 export const STREAMS: { value: Stream; label: string }[] = [
   { value: "science", label: "Science" },
@@ -109,3 +111,25 @@ export const EXEAT_TRANSITIONS: Record<ExeatStatus, ExeatStatus[]> = {
   returned: [],
   cancelled: [],
 };
+
+export const PAYMENT_METHODS: { value: PaymentMethod; label: string }[] = [
+  { value: "momo", label: "Mobile money" },
+  { value: "bank", label: "Bank transfer" },
+  { value: "cash", label: "Cash" },
+];
+
+export const INVOICE_STATUS_LABELS: Record<InvoiceStatus, string> = {
+  unpaid: "Unpaid",
+  part_paid: "Part paid",
+  paid: "Paid",
+  void: "Void",
+};
+
+// Format an amount as Ghana Cedis. Always two decimals, GH₵ symbol.
+export function formatCedis(amount: number | null | undefined): string {
+  const n = typeof amount === "number" ? amount : 0;
+  return `GH₵${n.toLocaleString("en-GH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}

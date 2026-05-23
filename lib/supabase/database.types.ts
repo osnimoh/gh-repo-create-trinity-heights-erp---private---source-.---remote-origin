@@ -776,6 +776,184 @@ export type Database = {
           },
         ];
       };
+      fee_structure: {
+        Row: Timestamps & {
+          id: string;
+          academic_year_id: string;
+          year_group: Database["public"]["Enums"]["year_group"];
+          amount: number;
+          description: string | null;
+        };
+        Insert: {
+          id?: string;
+          academic_year_id: string;
+          year_group: Database["public"]["Enums"]["year_group"];
+          amount: number;
+          description?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          academic_year_id?: string;
+          year_group?: Database["public"]["Enums"]["year_group"];
+          amount?: number;
+          description?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "fee_structure_academic_year_id_fkey";
+            columns: ["academic_year_id"];
+            referencedRelation: "academic_year";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      scholarship: {
+        Row: Timestamps & {
+          id: string;
+          student_id: string;
+          name: string;
+          kind: Database["public"]["Enums"]["scholarship_kind"];
+          value: number;
+          academic_year_id: string | null;
+          active: boolean;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          name: string;
+          kind: Database["public"]["Enums"]["scholarship_kind"];
+          value: number;
+          academic_year_id?: string | null;
+          active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          name?: string;
+          kind?: Database["public"]["Enums"]["scholarship_kind"];
+          value?: number;
+          academic_year_id?: string | null;
+          active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "scholarship_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      invoice: {
+        Row: Timestamps & {
+          id: string;
+          student_id: string;
+          term_id: string;
+          academic_year_id: string | null;
+          standard_amount: number;
+          discount_amount: number;
+          net_amount: number;
+          amount_paid: number;
+          status: Database["public"]["Enums"]["invoice_status"];
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          term_id: string;
+          academic_year_id?: string | null;
+          standard_amount: number;
+          discount_amount?: number;
+          net_amount: number;
+          amount_paid?: number;
+          status?: Database["public"]["Enums"]["invoice_status"];
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          term_id?: string;
+          academic_year_id?: string | null;
+          standard_amount?: number;
+          discount_amount?: number;
+          net_amount?: number;
+          amount_paid?: number;
+          status?: Database["public"]["Enums"]["invoice_status"];
+          created_at?: string;
+          updated_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "invoice_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "student";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "invoice_term_id_fkey";
+            columns: ["term_id"];
+            referencedRelation: "term";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      payment: {
+        Row: {
+          id: string;
+          invoice_id: string;
+          amount: number;
+          method: Database["public"]["Enums"]["payment_method"];
+          reference: string | null;
+          paid_on: string;
+          received_by_staff_id: string | null;
+          created_at: string;
+          created_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          invoice_id: string;
+          amount: number;
+          method: Database["public"]["Enums"]["payment_method"];
+          reference?: string | null;
+          paid_on?: string;
+          received_by_staff_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          invoice_id?: string;
+          amount?: number;
+          method?: Database["public"]["Enums"]["payment_method"];
+          reference?: string | null;
+          paid_on?: string;
+          received_by_staff_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "payment_invoice_id_fkey";
+            columns: ["invoice_id"];
+            referencedRelation: "invoice";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       audit_log: {
         Row: {
           id: string;
@@ -863,6 +1041,20 @@ export type Database = {
         };
         Returns: string;
       };
+      generate_invoice: {
+        Args: { p_student_id: string; p_term_id: string };
+        Returns: string;
+      };
+      record_payment: {
+        Args: {
+          p_invoice_id: string;
+          p_amount: number;
+          p_method: Database["public"]["Enums"]["payment_method"];
+          p_reference?: string;
+          p_paid_on?: string;
+        };
+        Returns: string;
+      };
     };
     Enums: {
       sex: "male" | "female";
@@ -912,6 +1104,9 @@ export type Database = {
         | "departed"
         | "returned"
         | "cancelled";
+      scholarship_kind: "percentage" | "fixed";
+      payment_method: "momo" | "bank" | "cash";
+      invoice_status: "unpaid" | "part_paid" | "paid" | "void";
     };
     CompositeTypes: Record<string, never>;
   };
